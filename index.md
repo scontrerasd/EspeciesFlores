@@ -59,10 +59,10 @@ Entrene su aplicación para distinguir entre diferentes especies de flores.
         }
     }
 </script>
-<script src = "https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"> </script>
+<script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
 <df-messenger
-  intent = "BIENVENIDO"
-  chat-title = "EspeciesdeFlores"
-  id-agente = "b548e786-bd4c-4738-b25f-5e6175f7ce80"
-  código-idioma = "es"
-> </df-messenger>
+  intent="WELCOME"
+  chat-title="EspeciesdeFlores"
+  agent-id="b548e786-bd4c-4738-b25f-5e6175f7ce80"
+  language-code="es"
+></df-messenger>
