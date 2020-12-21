@@ -1,64 +1,63 @@
-## Especies de flores
-Entrene su aplicación para distinguir entre diferentes especies de flores.
-<div> Especies </div>
-<button type = "button" onclick = "init ()"> Iniciar </button>
-<div id = "webcam-container"> </div>
-<div id = "label-container"> </div>
-<script src = "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"> </script>
-<script src = "https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"> </script>
-<script type = "text / javascript">
-    // Más funciones de API aquí:
+<div>Teachable Machine Image Model</div>
+<button type="button" onclick="init()">Start</button>
+<div id="webcam-container"></div>
+<div id="label-container"></div>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
+<script type="text/javascript">
+    // More API functions here:
     // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/image
 
-    // el enlace a su modelo proporcionado por el panel de exportación de Teachable Machine
-    const URL = "https://teachablemachine.withgoogle.com/models/ilcN7gXIs/";
+    // the link to your model provided by Teachable Machine export panel
+    const URL = "https://teachablemachine.withgoogle.com/models/58EO-JHQ2/";
 
-    dejar modelo, webcam, labelContainer, maxPredictions;
+    let model, webcam, labelContainer, maxPredictions;
 
-    // Cargue el modelo de imagen y configure la cámara web
-    función asíncrona init () {
+    // Load the image model and setup the webcam
+    async function init() {
         const modelURL = URL + "model.json";
         const metadataURL = URL + "metadata.json";
 
-        // carga el modelo y los metadatos
-        // Consulte tmImage.loadFromFiles () en la API para admitir archivos de un selector de archivos
-        // o archivos de su disco duro local
-        // Nota: la biblioteca de pose agrega el objeto "tmImage" a su ventana (window.tmImage)
-        modelo = espera tmImage.load (modelURL, metadataURL);
-        maxPredictions = model.getTotalClasses ();
+        // load the model and metadata
+        // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
+        // or files from your local hard drive
+        // Note: the pose library adds "tmImage" object to your window (window.tmImage)
+        model = await tmImage.load(modelURL, metadataURL);
+        maxPredictions = model.getTotalClasses();
 
-        // Función de conveniencia para configurar una cámara web
-        const flip = verdadero; // si voltear la webcam
-        webcam = nueva tmImage.Webcam (200, 200, flip); // ancho, alto, voltear
-        espera webcam.setup (); // solicitar acceso a la webcam
-        esperar webcam.play ();
-        window.requestAnimationFrame (bucle);
+        // Convenience function to setup a webcam
+        const flip = true; // whether to flip the webcam
+        webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip
+        await webcam.setup(); // request access to the webcam
+        await webcam.play();
+        window.requestAnimationFrame(loop);
 
-        // agregar elementos al DOM
-        document.getElementById ("contenedor de webcam"). appendChild (webcam.canvas);
-        labelContainer = document.getElementById ("etiqueta-contenedor");
-        for (let i = 0; i <maxPredictions; i ++) {// y etiquetas de clase
-            labelContainer.appendChild (document.createElement ("div"));
+        // append elements to the DOM
+        document.getElementById("webcam-container").appendChild(webcam.canvas);
+        labelContainer = document.getElementById("label-container");
+        for (let i = 0; i < maxPredictions; i++) { // and class labels
+            labelContainer.appendChild(document.createElement("div"));
         }
     }
 
-    bucle de función asíncrona () {
-        webcam.update (); // actualiza el marco de la webcam
-        esperar predecir ();
-        window.requestAnimationFrame (bucle);
+    async function loop() {
+        webcam.update(); // update the webcam frame
+        await predict();
+        window.requestAnimationFrame(loop);
     }
 
-    // ejecutar la imagen de la cámara web a través del modelo de imagen
-    función asíncrona predecir () {
-        // predecir puede tomar una imagen, un video o un elemento html de lienzo
-        predicción constante = espera modelo.predicto (webcam.canvas);
-        para (sea i = 0; i <maxPredictions; i ++) {
+    // run the webcam image through the image model
+    async function predict() {
+        // predict can take in an image, video or canvas html element
+        const prediction = await model.predict(webcam.canvas);
+        for (let i = 0; i < maxPredictions; i++) {
             const classPrediction =
-                predicción [i] .className + ":" + predicción [i] .probability.toFixed (2);
-            labelContainer.childNodes [i] .innerHTML = classPrediction;
+                prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+            labelContainer.childNodes[i].innerHTML = classPrediction;
         }
     }
 </script>
+
 <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
 <df-messenger
   intent="WELCOME"
